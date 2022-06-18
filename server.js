@@ -1,17 +1,29 @@
 const express = require("express");
-const { graphqlHTTP } = require('express-graphql');
+const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
+const { getCourse, getCourses } = require("./service");
 
 // GraphQL Schema
 const schema = buildSchema(`
   type Query {
-    message: String
+    course(id: Int!): Course
+    courses(topic: String!): [Course]
   } 
+  
+  type Course {
+    id: Int
+    title: String
+    author: String
+    topic: String
+    description: String
+    url: String
+  }
 `);
 
 // Root resolver
 const root = {
-  message: () => `Hello world!`,
+  course: getCourse,
+  courses: getCourses,
 };
 
 // Create an express server and a graphql endpoint
@@ -26,4 +38,4 @@ app.use(
   })
 );
 
-app.listen(3000, () => console.log(`Server is running!`))
+app.listen(3000, () => console.log(`Server is running!`));
